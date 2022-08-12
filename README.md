@@ -61,7 +61,7 @@ First navigate to [Google Apps Script](https://script.google.com/home) and creat
 You are redirected to a new unnamed project.
 ![untitled_project](./incomingCall_untitledProject.png)
 Replace the code in the `Code.gs` with the following: 
-```
+```js
 function doPost(e) {
     var url = "YOUR_GOOGLE_SPREADSHEET_URL";
     var sheet = SpreadsheetApp.openByUrl(url);
@@ -72,11 +72,17 @@ function doPost(e) {
     sheet.appendRow([data.parameters.event.toString(), data.parameters.from.toString(), data.parameters.to.toString()]);
 }
 ```
-**Info:** The `doPost`-function will receive the webhook event as an `Object`. We then extract data from this object and store it in a Google Spreadsheet.
+**Info:** *The `doPost`-function will receive the webhook event as an `Object`. We then extract data from this object and store it in a Google Spreadsheet.*
 
-In a new browser tab open your Google Drive. Create a new Spreadsheet and open it. This sheet will log the sent webhooks. Copy the sheet's URL and paste it into the `"YOUR_GOOGLE_SPREADSHEET_URL"` in your `Code.gs`.
+In a new browser tab open your Google Drive. Create a new Spreadsheet and open it. This sheet will log your incoming webhooks. Copy the sheet's URL and paste it into the `"YOUR_GOOGLE_SPREADSHEET_URL"` in your `Code.gs`.
 
 Deploy the script by clicking the blue `Deploy` button in the top right corner. Click `new Deployment`. In the popup window go to `select type` an choose `web app`. Fill out all the necessary information. Make sure to choose `Me` for `execute as` and `anyone` for `who has access`, then click `deploy`. You then need to authorize access.
+
+
+![verification](/incomingCall_verification.png)
+
+In case you are notified that the app has not been verified, click on `Advanced` to see the hidden information.
+Click on `Go to YOUR_PROJECT`.
 
 ![new_deployment](./incomingCall_newDeployment.png)
 
@@ -93,7 +99,6 @@ You can configure webhooks for sipgate.io as follows:
 To test your setup make a call to a phonenumber associated with your sipgate-account. The call with the event type, incoming and outgoing phonenumbers is then printed to your spreadsheet.
 
 ## Common Issues
-
 ### sipgate.de displays "Feature sipgate.io not booked."
 Possible reasons are:
 - the sipgate.io feature is not booked for your account
@@ -104,7 +109,7 @@ See the section [Enabling sipgate.io for your sipgate account](#enabling-sipgate
 Possible reasons are:
 - the configured webhook URL is incorrect
 - webhooks are not enabled for the phoneline that received the call
-
+- make sure you are authorized to access the Google Spreadsheet you created
 ## Contact Us
 Please let us know how we can improve this example.
 If you have a specific feature request or found a bug, please use **Issues** or fork this repository and send a **pull request** with your improvements.
