@@ -11,10 +11,7 @@ This example demonstrates how to receive and process webhooks from [sipgate.io](
 - [Configure webhooks for sipgate.io](#Configure-webhooks-for-sipgateio)
 - [Execution](#Execution)
 - [Common Issues](#Common-Issues)
-- [Related](#Related)
 - [Contact Us](#Contact-Us)
-- [License](#License)
-- [External Libraries](#External-Libraries)
 
 
 ## Prerequisites
@@ -56,14 +53,14 @@ sipgate.io offers webhooks for the following events:
 
 **Note:** Per default sipgate.io only sends webhooks for **newCall** events.
 Usually to subscribe to other event types you can reply to the **newCall** event with an XML response. 
-Unfortunately Google Apps Script does not support `content-type: application/xml`.Therefore we cannot subscribe to additional event types.
+Unfortunately Google Apps Script does not support `content-type: application/xml`. Therefore we cannot subscribe to additional event types.
 If you need to respond you may refer to our repository [sipgateio-incomingcall-node](https://github.com/sipgate-io/sipgateio-incomingcall-node).
 
 ## How to setup an apps script
 First navigate to [Google Apps Script](https://script.google.com/home) and create a new project via the button in the upper left corner.
 You are redirected to a new unnamed project.
 ![untitled_project](./incomingCall_untitledProject.png)
-Replace the code in the `Code.gs`with the following: 
+Replace the code in the `Code.gs` with the following: 
 ```
 function doPost(e) {
     var url = "YOUR_GOOGLE_SPREADSHEET_URL";
@@ -75,81 +72,42 @@ function doPost(e) {
     sheet.appendRow([data.parameters.event.toString(), data.parameters.from.toString(), data.parameters.to.toString()]);
 }
 ```
+**Info:** The `doPost`-function will receive the webhook event as an `Object`. We then extract data from this object and store it in a Google Spreadsheet.
 
-Du erstellst in deinem Google Drive ein neues Spreadsheet und öffnest dieses. Dann kopierst du die URL des Sheets und fügst sie in das Feld `"YOUR_GOOGLE_SPREADSHEET_URL"` ein.
+In a new browser tab open your Google Drive. Create a new Spreadsheet and open it. This sheet will log the sent webhooks. Copy the sheet's URL and paste it into the `"YOUR_GOOGLE_SPREADSHEET_URL"` in your `Code.gs`.
 
-Dann erstellen  wir ein neues Deployment, indem wir auf den blauen Button `Deploy` in der oberen rechten Ecke klicken. 
-new deployment
-select type: web app
-fill out: execute as me ; who has access anyone
-deploy
-authorize; allow
-copy web app url; done
-sipgate incoming url
-anrufen 
-fertig
+Deploy the script by clicking the blue `Deploy` button in the top right corner. Click `new Deployment`. In the popup window go to `select type` an choose `web app`. Fill out all the necessary information. Make sure to choose `Me` for `execute as` and `anyone` for `who has access`, then click `deploy`. You then need to authorize access.
 
-### What happens here?
-The `doPost`-function will receive the webhook event as an `Object`. We then extract data from this object and store it in a Google Spreadsheet.
+![new_deployment](./incomingCall_newDeployment.png)
 
+In the next popup window copy the web app URL and click `Done`. You may then configure the webhooks at sipgate.io.
 ## Configure webhooks for sipgate.io 
 You can configure webhooks for sipgate.io as follows:
 
 1. Navigate to [console.sipgate.com](https://console.sipgate.com/) and login with your sipgate account credentials.
 2. Select the **Webhooks**&nbsp;>&nbsp;**URLs** tab in the left side menu
-3. Click the gear icon of the **Incoming** or **Outgoing** entry
-4. Fill in your webhook URL and click save. The webhook URL is the web app URL you will get by deploying the apps script.
+3. Click the gear icon of the **Incoming** entry
+4. Fill in your webhook URL and click save. The webhook URL is the web app URL you copied beforehand.
 
 ## Execution
+To test your setup make a call to a phonenumber associated with your sipgate-account. The call with the event type, incoming and outgoing phonenumbers is then printed to your spreadsheet.
 
 ## Common Issues
 
-### web app displays "Feature sipgate.io not booked."
+### sipgate.de displays "Feature sipgate.io not booked."
 Possible reasons are:
 - the sipgate.io feature is not booked for your account
 
 See the section [Enabling sipgate.io for your sipgate account](#enabling-sipgateio-for-your-sipgate-account) for instruction on how to book sipgate.io
 
-
-### "Error: listen EADDRINUSE: address already in use :::{port}"
-Possible reasons are:
-- another instance of the application is already running
-- the specified port is in use by another application
-
-
-### "Error: listen EACCES: permission denied 0.0.0.0:{port}"
-Possible reasons are:
-- you do not have permission to bind to the specified port.
-  This usually occurs if you try to use port 80, 443 or another well-known port which can only be bound with superuser privileges
-
-
 ### Call happened but no webhook was received 
 Possible reasons are:
 - the configured webhook URL is incorrect
-- the SSH tunnel connection broke
 - webhooks are not enabled for the phoneline that received the call
-
-
-## Related
-- [Express](https://expressjs.com/)
-
 
 ## Contact Us
 Please let us know how we can improve this example.
 If you have a specific feature request or found a bug, please use **Issues** or fork this repository and send a **pull request** with your improvements.
-
-
-## License
-This project is licensed under **The Unlicense** (see [LICENSE file](./LICENSE)).
-
-
-## External Libraries
-This code uses the following external libraries
-
-- _Express_:
-  - Licensed under the [MIT License](https://opensource.org/licenses/MIT)
-  - Website: https://expressjs.com/
-
 
 ---
 
